@@ -2,10 +2,11 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import pathlib
-import japanize_matplotlib
 
-st.set_page_config(page_title="最高気温モニター", layout="centered")
-st.title("東京・最高気温モニター（実測 & 予測）")
+plt.rcParams['font.family'] = 'Noto Sans CJK JP'
+
+st.set_page_config(page_title="東京都心最高気温モニター", layout="centered")
+st.title("東京都心・最高気温モニター（実測 & 予測）")
 
 thr = st.slider("閾値（℃）", 25, 35, 30, step=1)
 
