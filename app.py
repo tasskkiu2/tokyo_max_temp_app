@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import pathlib
+import altair as alt
 
 plt.rcParams['font.family'] = 'Noto Sans CJK JP' 
 
@@ -9,6 +10,8 @@ st.set_page_config(page_title="東京都心最高気温モニター", layout="ce
 st.title("東京都心・最高気温モニター（実測 & 予測）")
 
 thr = st.slider("閾値（℃）", 25, 35, 30, step=1)
+
+st.subheader(f"年ごとの {thr}℃ 以上の日数（青:実測 & 赤:予測）")
 
 # ---- CSV固定読み込み ----
 actual_path = pathlib.Path(__file__).parent / "data" / "max_data.csv"
@@ -35,16 +38,16 @@ pred.columns = ["year", "days"]
 annual = pd.concat([actual, pred], ignore_index=True)
 annual["kind"] = ["実測" if y <= 2024 else "予測" for y in annual["year"]]
 
-# ---- プロット ----
-plt.figure(figsize=(8,4))
-colors = annual["kind"].map({"実測":"steelblue","予測":"tomato"})
-plt.bar(annual["year"].astype(str), annual["days"], color=colors)
 
-plt.xticks(rotation=45)
-plt.xlabel("年")
-plt.ylabel("日数")
-plt.title(f"年ごとの {thr}℃ 以上の日数（青:実測 & 赤:予測）")
-plt.grid(axis="y", linestyle="--", alpha=0.7)
-plt.tight_layout()
+bar = (
+    alt.Chart(annual)
+    .mark_bar()
+    .encode(
+        x=alt.X("year:O", title="年", axis=alt.Axis(labelAngle=45)),
+        y=alt.Y("days:Q", title="日数"),
+        color=alt.Color("kind:N", scale=alt.Scale(domain=["実測","予測"], range=["steelblue","tomato"])),
+        tooltip=["year", "days", "kind"]
+    )
+)
 
-st.pyplot(plt, use_container_width=False)
+st.altair_chart(bar, use_container_width=True)
