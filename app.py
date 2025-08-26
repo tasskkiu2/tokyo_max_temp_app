@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pathlib
 
-plt.rcParams['font.family'] = 'Hiragino Sans' 
+plt.rcParams['font.family'] = 'Noto Sans CJK JP' 
 
 st.set_page_config(page_title="東京都心最高気温モニター", layout="centered")
 st.title("東京都心・最高気温モニター（実測 & 予測）")
